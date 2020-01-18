@@ -16,8 +16,8 @@ def getList(listurl):
     cursor=conn.cursor()
     cursor.execute('create database if not exists movielist;')
     cursor.execute('use movielist;') 
-    cursor.execute('create table if not exists movieinfo (Name varchar(20) primary key,Image varchar(255),Url varchar(255),Score varchar(20),Num_person varchar(20));')
-    cursor.execute('ALTER TABLE movieinfo DEFAULT CHARACTER SET utf8;')
+    cursor.execute('drop table if exists movieinfo')
+    cursor.execute('create table movieinfo (Name varchar(20) primary key,Image varchar(255),Url varchar(255),Score double,Num_person int,Rating_dou int);')
     header={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36 Edg/79.0.309.65"}
     for i in listurl:
         page=requests.get(i,headers=header)
@@ -25,11 +25,12 @@ def getList(listurl):
         itemlist=soup.select('div.item')
         for j in itemlist:
             name=str(j.select('span.title')[0].string)
+            rating=int(j.select('em')[0].string)
             image=str(j.img['src'])
             url=str(j.a['href'])
-            score=str(j.select('span.rating_num')[0].string)
-            person=str(j.select('span')[-2:][0].string.split('人')[0])
-            cursor.execute('insert into movieinfo (Name,Image,Url,Score,Num_person) values (%s,%s,%s,%s,%s)',(name,image,url,score,person))
+            score=float(j.select('span.rating_num')[0].string)
+            person=int(j.select('span')[-2:][0].string.split('人')[0])
+            cursor.execute('insert into movieinfo (Name,Image,Url,Score,Num_person,Rating_dou) values (%s,%s,%s,%s,%s,%s)',(name,image,url,score,person,rating))
     conn.commit()
     cursor.close()
     conn.close()
