@@ -5,6 +5,7 @@ import json
 import openpyxl,mysql.connector
 header={"User-Agent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/79.0.3945.117 Safari/537.36 Edg/79.0.309.65"}
 # 获得爬取地址
+#测试一下这台电脑得github
 def getPage(website):
     listnum=[x*25 for x in range(0,10)]
     listurl=[]
